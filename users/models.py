@@ -19,6 +19,10 @@ class User(AbstractUser, PermissionsMixin):
         default=False,
         help_text=_("Designates whether this user has verified their email.")
     )
+    is_custom_admin = models.BooleanField(
+        default=False,
+        help_text=_("Designates whether this user has dashboard access to the site.")
+    )
     date_joined = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = "email"

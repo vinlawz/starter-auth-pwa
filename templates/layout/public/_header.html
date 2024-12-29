@@ -26,12 +26,12 @@
     <div
       class="ms-auto flex items-center gap-x-2 py-1 md:order-3 md:col-span-3 md:ps-6"
     >
-      <button
+      <a
         type="button"
         class="inline-flex items-center gap-x-2 rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-black hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:text-white dark:hover:bg-white/10 dark:hover:text-white"
-      >
-        Sign in
-      </button>
+        href="{% url 'account_signup' %}">
+        Sign up
+      </a>
 
       <div class="md:hidden">
         <button
