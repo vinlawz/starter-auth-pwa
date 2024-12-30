@@ -2,8 +2,12 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import UserCreationForm, UserChangeForm
-from .models import User
+from .models import User, UserProfile
 
+class UserProfileInline(admin.StackedInline):  # new
+    model = UserProfile
+    can_delete = False
+    verbose_name_plural = "User Profile"
 
 class UserAdmin(UserAdmin):
     add_form = UserCreationForm
@@ -48,6 +52,13 @@ class UserAdmin(UserAdmin):
     )
     search_fields = ("email", "first_name", "last_name")
     ordering = ("email",)
+    inlines = [UserProfileInline]
 
+    
 
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", )
+    
+    
 admin.site.register(User, UserAdmin)
