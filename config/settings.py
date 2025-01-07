@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     
     "allauth",
     "allauth.account",
+    "crispy_forms",
+    "crispy_tailwind",
 ]
 
 MIDDLEWARE = [
@@ -124,7 +126,8 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1
 
 
-
+#email configs
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -145,6 +148,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # media
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Crispy configs
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
