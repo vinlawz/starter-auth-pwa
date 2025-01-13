@@ -125,6 +125,12 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
+# https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+LOGIN_REDIRECT_URL = "app:dashboard_landing_page"
+
+# https://django-allauth.readthedocs.io/en/latest/views.html#logout-account-logout
+ACCOUNT_LOGOUT_REDIRECT_URL = "app:landing_page"
+
 
 #email configs
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

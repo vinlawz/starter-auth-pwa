@@ -12,3 +12,10 @@ https://learndjango.com/tutorials/django-allauth-tutorial#django-allauth
 
 https://github.com/django-crispy-forms/crispy-tailwind?tab=readme-ov-file
 
+
+## Resources thinking 
+
+https://resend.com/python
+
+https://uploadthing.com/
+
