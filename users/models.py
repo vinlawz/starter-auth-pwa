@@ -7,19 +7,28 @@ from django.utils.translation import gettext_lazy as _
 
 from .managers import CustomUserManager
 
+
 class User(AbstractUser, PermissionsMixin):
     class Types(models.TextChoices):
         STAFF = "STAFF", "Staff"
-        ENDUSER = "ENDUSER", "EndUser"
-        
+        ENDUSER = "ENDUSER", "End User"
+
+    GENDER_CHOICES = (
+        ("male", "Male"),
+        ("female", "Female"),
+    )
+
     username = None
     email = models.EmailField(
-        _("email address"), 
+        _("email address"),
         unique=True,
         db_index=True
     )
     first_name = models.CharField(_("first name"), max_length=30, blank=True)
     last_name = models.CharField(_("last name"), max_length=30, blank=True)
+    gender = models.CharField(
+        _("Gender"), max_length=30, choices=GENDER_CHOICES, blank=True, null=True
+    )
     type = models.CharField(
         _("User Type"),
         max_length=50,
@@ -35,21 +44,35 @@ class User(AbstractUser, PermissionsMixin):
         help_text=_("Designates whether this user has dashboard access to the site.")
     )
     date_joined = models.DateTimeField(default=timezone.now)
-    # add additional fields here
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
 
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+
     def __str__(self):
         return self.email
 
 
+# Type-Based Query Managers
+class StaffManager(CustomUserManager):
+    def get_queryset(self, *args, **kwargs):
+        return super().get_queryset(*args, **kwargs).filter(type=User.Types.STAFF)
+
+
+class EndUserManager(CustomUserManager):
+    def get_queryset(self, *args, **kwargs):
+        return super().get_queryset(*args, **kwargs).filter(type=User.Types.ENDUSER)
+
+
+# Staff Profile Model
 class StaffUserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # add additional fields here
-    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="staff_profile")
+
     def __str__(self):
         return self.user.email
 
@@ -57,28 +80,62 @@ class StaffUserProfile(models.Model):
         verbose_name = "Staff Profile"
         verbose_name_plural = "Staff Profiles"
 
+
+# End User Profile Model
 class EndUserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # add additional fields here
-    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="end_user_profile")
+
     def __str__(self):
         return self.user.email
 
     class Meta:
         verbose_name = "End User Profile"
         verbose_name_plural = "End User Profiles"
-        
+
+
+# Optimized Signal for Creating & Updating Profiles
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        if instance.type == User.Types.STAFF:
-            StaffUserProfile.objects.create(user=instance)
-        else:
-            EndUserProfile.objects.create(user=instance)
-    else:
-        if instance.type == User.Types.STAFF:
-            StaffUserProfile.objects.update_or_create(user=instance)
-            EndUserProfile.objects.filter(user=instance).delete()
-        else:
-            EndUserProfile.objects.update_or_create(user=instance)
-            StaffUserProfile.objects.filter(user=instance).delete()
+    """Ensure only the correct profile exists when a user is created or updated."""
+    if instance.type == User.Types.STAFF:
+        # Ensure Staff Profile Exists, Remove EndUser Profile
+        StaffUserProfile.objects.get_or_create(user=instance)
+        EndUserProfile.objects.filter(user=instance).delete()
+    elif instance.type == User.Types.ENDUSER:
+        # Ensure EndUser Profile Exists, Remove Staff Profile
+        EndUserProfile.objects.get_or_create(user=instance)
+        StaffUserProfile.objects.filter(user=instance).delete()
+
+
+# Staff Proxy Model
+class Staff(User):
+    objects = StaffManager()
+
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.type = User.Types.STAFF
+        return super().save(*args, **kwargs)
+
+    @property
+    def profile(self):
+        return self.staff_profile
+
+
+# EndUser Proxy Model
+class EndUser(User):
+    objects = EndUserManager()
+
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.type = User.Types.ENDUSER
+        return super().save(*args, **kwargs)
+
+    @property
+    def profile(self):
+        return self.end_user_profile
