@@ -93,19 +93,6 @@ class EndUserProfile(models.Model):
         verbose_name_plural = "End User Profiles"
 
 
-# Optimized Signal for Creating & Updating Profiles
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    """Ensure only the correct profile exists when a user is created or updated."""
-    if instance.type == User.Types.STAFF:
-        # Ensure Staff Profile Exists, Remove EndUser Profile
-        StaffUserProfile.objects.get_or_create(user=instance)
-        EndUserProfile.objects.filter(user=instance).delete()
-    elif instance.type == User.Types.ENDUSER:
-        # Ensure EndUser Profile Exists, Remove Staff Profile
-        EndUserProfile.objects.get_or_create(user=instance)
-        StaffUserProfile.objects.filter(user=instance).delete()
-
 
 # Staff Proxy Model
 class Staff(User):
@@ -121,7 +108,10 @@ class Staff(User):
 
     @property
     def profile(self):
-        return self.staff_profile
+        try:
+            return self.staff_profile
+        except StaffUserProfile.DoesNotExist:
+            return None  # Or handle as needed
 
 
 # EndUser Proxy Model
@@ -138,4 +128,23 @@ class EndUser(User):
 
     @property
     def profile(self):
-        return self.end_user_profile
+        try:
+            return self.end_user_profile
+        except EndUserProfile.DoesNotExist:
+            return None  # Or handle as needed
+    
+    
+# Optimized Signal for Creating & Updating Profiles
+# @receiver(post_save, sender=User)
+# def create_or_update_user_profile(sender, instance, created, **kwargs):
+#     """Ensure only the correct profile exists when a user is created or updated."""
+#     if created or instance.type != User.objects.get(pk=instance.pk).type:
+#         if instance.type == User.Types.STAFF:
+#             StaffUserProfile.objects.get_or_create(user=instance)
+#             EndUserProfile.objects.filter(user=instance).delete()
+#         elif instance.type == User.Types.ENDUSER:
+#             EndUserProfile.objects.get_or_create(user=instance)
+#             StaffUserProfile.objects.filter(user=instance).delete()
+            
+
+import users.signals

@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     "app",
-    "users",
+    "users.apps.UsersConfig",
     
     "allauth",
     "allauth.account",
@@ -115,7 +115,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 # Use email for authentication      
 ACCOUNT_AUTHENTICATION_METHOD = "email"  
 ACCOUNT_EMAIL_REQUIRED = True 
-ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
