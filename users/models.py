@@ -43,6 +43,9 @@ class User(AbstractUser, PermissionsMixin):
         default=False,
         help_text=_("Designates whether this user has dashboard access to the site.")
     )
+    profile_image = models.ImageField(
+        upload_to="profile_pics/", blank=True, null=True
+    )  # ✅ Added profile image field
     date_joined = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = "email"
@@ -93,7 +96,6 @@ class EndUserProfile(models.Model):
         verbose_name_plural = "End User Profiles"
 
 
-
 # Staff Proxy Model
 class Staff(User):
     objects = StaffManager()
@@ -133,18 +135,5 @@ class EndUser(User):
         except EndUserProfile.DoesNotExist:
             return None  # Or handle as needed
     
-    
-# Optimized Signal for Creating & Updating Profiles
-# @receiver(post_save, sender=User)
-# def create_or_update_user_profile(sender, instance, created, **kwargs):
-#     """Ensure only the correct profile exists when a user is created or updated."""
-#     if created or instance.type != User.objects.get(pk=instance.pk).type:
-#         if instance.type == User.Types.STAFF:
-#             StaffUserProfile.objects.get_or_create(user=instance)
-#             EndUserProfile.objects.filter(user=instance).delete()
-#         elif instance.type == User.Types.ENDUSER:
-#             EndUserProfile.objects.get_or_create(user=instance)
-#             StaffUserProfile.objects.filter(user=instance).delete()
-            
 
 import users.signals
