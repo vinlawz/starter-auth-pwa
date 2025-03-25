@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Military Asset Tracking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold"> Military Asset Tracking</h1>
+        <div>
+            <a href="{% url 'app:dashboard_landing_page' %}" class="px-4 py-2 bg-green-600 rounded">Dashboard</a>
+            <a href="{% url 'account_login' %}" class="px-4 py-2 bg-blue-500 rounded">Login</a>
+            <a href="{% url 'account_signup' %}" class="px-4 py-2 bg-yellow-500 rounded">Sign Up</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="text-center py-20">
+        <h2 class="text-4xl font-extrabold">Real-Time Military Readiness Tracking</h2>
+        <p class="mt-4 text-gray-300">Monitor soldier readiness, asset statuses, and mission-critical resources with precision.</p>
+        <div class="mt-6">
+            <a href="{% url 'app:dashboard_landing_page' %}" class="px-6 py-3 bg-green-500 rounded text-lg">Access Dashboard</a>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-16 px-6">
+        <h3 class="text-3xl font-bold text-center">Core Features</h3>
+        <div class="grid md:grid-cols-3 gap-8 mt-8">
+            <div class="bg-gray-800 p-6 rounded">
+                <h4 class="text-xl font-semibold"> Secure Access</h4>
+                <p class="text-gray-400">Role-based authentication for different military personnel.</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded">
+                <h4 class="text-xl font-semibold"> Readiness Reports</h4>
+                <p class="text-gray-400">Automated reports for unit readiness tracking.</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded">
+                <h4 class="text-xl font-semibold"> Asset Management</h4>
+                <p class="text-gray-400">Monitor vehicles, weapons, and equipment in real-time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 p-6 text-center">
+        <p class="text-gray-400">&copy; 2025 Military Asset Tracking. All rights reserved.</p>
+    </footer>
+</body>
+</html>

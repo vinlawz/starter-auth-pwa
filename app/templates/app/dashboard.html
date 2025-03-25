@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: url('https://wallpapercave.com/wp/wp7528068.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+    <nav class="bg-black bg-opacity-80 p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{% url 'app:dashboard_landing_page' %}" class="text-green-400 text-xl font-extrabold uppercase tracking-wide">
+                🛰 Mission Control
+            </a>
+            <div>
+                <a href="{% url 'app:protected_view' %}" class="text-gray-300 px-4 hover:text-green-400 transition">Profile</a>
+                <a href="{% url 'app:logout' %}" class="text-black bg-red-600 px-4 py-2 rounded hover:bg-red-700">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container mx-auto mt-12 p-8 bg-black bg-opacity-80 shadow-lg rounded-lg text-center">
+        <h1 class="text-4xl font-extrabold text-green-400 uppercase tracking-wider">Welcome, Operator {{ user.username }}</h1>
+        <p class="text-gray-400 mt-3 italic">Mission Control is active. Awaiting orders...</p>
+        <div class="mt-8">
+            <h2 class="text-2xl font-semibold text-gray-300">Tactical Commands</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+                <a href="{% url 'app:update_soldier_readiness' %}" class="block p-5 bg-green-500 text-black font-bold rounded shadow hover:bg-green-600 transition transform hover:scale-105">
+                    Update Readiness 
+                </a>
+                <a href="{% url 'app:protected_view' %}" class="block p-5 bg-blue-500 text-black font-bold rounded shadow hover:bg-blue-600 transition transform hover:scale-105">
+                    View Intel 📡
+                </a>
+                <a href="{% url 'account_logout' %}" class="block p-5 bg-red-600 text-black font-bold rounded shadow hover:bg-red-700 transition transform hover:scale-105">
+                    Abort Mission 🚨
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
